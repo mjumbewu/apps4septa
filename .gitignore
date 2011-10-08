@@ -1,0 +1,7 @@
+*.py[c|o]
+
+# Temporary files (e.g., from text editors/IDEs)
+*~
+
+# Local-specific settings and credentials
+settings/local.py
