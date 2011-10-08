@@ -125,7 +125,7 @@ INSTALLED_APPS = (
     # my 3rd party
 
     # project apps
-    'world',
+    'septa',
 )
 
 # A sample logging configuration. The only tangible logging
