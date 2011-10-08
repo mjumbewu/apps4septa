@@ -8,3 +8,6 @@ settings/local.py
 
 # Don't check in the SQLite DB
 *.db
+
+#Virtual Environtment
+.env
