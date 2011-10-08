@@ -10,8 +10,8 @@ class SeptaStops(models.Model):
     stopid = models.IntegerField()
     stopname = models.CharField(max_length=254)
     routes = models.CharField(max_length=254)
-    latitude = models.DecimalField(max_digits=65535, decimal_places=65535)
-    longitude = models.DecimalField(max_digits=65535, decimal_places=65535)
+    latitude = models.DecimalField(max_digits=65535, decimal_places=65534)
+    longitude = models.DecimalField(max_digits=65535, decimal_places=65534)
     the_geom = models.PointField(srid=2272)
 
     objects = models.GeoManager()
@@ -23,12 +23,12 @@ class SeptaRoutes(models.Model):
     gid = models.IntegerField(primary_key=True)
 
     route = models.CharField(max_length=10)
-    length = models.DecimalField(max_digits=65535, decimal_places=65535)
+    length = models.DecimalField(max_digits=65535, decimal_places=65534)
     label = models.CharField(max_length=5)
     snow = models.CharField(max_length=5)
     core = models.CharField(max_length=5)
     description = models.CharField(max_length=100)
-    shape_len = models.DecimalField(max_digits=65535, decimal_places=65535)
+    shape_len = models.DecimalField(max_digits=65535, decimal_places=65534)
     the_geom = models.MultiLineStringField(srid=2272)
 
     objects = models.GeoManager()

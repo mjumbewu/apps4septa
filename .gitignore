@@ -5,3 +5,6 @@
 
 # Local-specific settings and credentials
 settings/local.py
+
+# Don't check in the SQLite DB
+*.db

@@ -21,6 +21,12 @@ DATABASES = {
 }
 DATABASES.update(local.DATABASES)
 
+# Make the septa app use the septa data.  See settings/local.py
+DATABASE_APPS_MAPPING = {
+    'septa': 'septa',
+}
+DATABASE_ROUTERS = ['routers.DatabaseAppsRouter']
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.

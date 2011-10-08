@@ -1,12 +1,25 @@
 DATABASES = {
+
+    # This is for your non-GIS data.  I like SQLite.  If you do too, no need to
+    # modify default.
     'default': {
-        'ENGINE': 'django.db.backends.gis.db.backends.postgis'
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'apps4septa.db',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    },
+
+    # Enter the credentials for the DB with the GIS data here.
+    'septa': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis'
         'NAME': '',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
+    },
 }
 
 # Make this unique, and don't share it with anybody.
