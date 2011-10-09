@@ -42,8 +42,8 @@
         }
         
         html += '<h5><div class="swatch swatch-'+i+'" style="background: '+r.color+';"></div>Route '+r.label+'</h5>' + 
-                '<ul><li><a href="http://septa.org/schedules/bus/pdf/'+paddedLabel+'.pdf" target="_blank">Schedule (pdf)</a>' + 
-                '</li><li><a href="http://septa.org/maps/bus/pdf/'+paddedLabel+'.pdf">Map (pdf)</a></li></ul>';
+                '<ul><li><a href="http://septa.org/schedules/bus/pdf/'+paddedLabel+'.pdf" target="_blank">Schedule</a>' + 
+                '</li><li><a href="http://septa.org/maps/bus/pdf/'+paddedLabel+'.pdf">Map</a></li></ul>';
       });
     } else {
       html = '<div class="alert-message block-message warning"><strong>No routes were found.</strong> No worries, just drag the map around and you\'ll find some.</div>';
