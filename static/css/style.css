@@ -2,7 +2,26 @@ body {
   padding-top: 60px;
 }
 
+.map-container {
+  margin-bottom:20px;
+  position:relative;
+}
+
 #map {
-    height:600px;
-    margin-bottom:20px;
+  height:600px;
+}
+
+#inset-map {
+  height: 200px;
+  width: 300px;
+  position: absolute;
+  border: 1px solid red;
+  top: 50%;
+  left: 50%;
+  margin-left: -150px;
+  margin-top: -100px;
+}
+
+#inset-map .leaflet-control-attribution {
+  display:none;
 }
