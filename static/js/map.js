@@ -71,12 +71,10 @@
       },
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {
-        console.log(data, textStatus, jqXHR);
         updateRouteDetails(data.routes);
         updateRouteMap(data.map_url);
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR, textStatus, errorThrown);
         updateRouteDetails(false);
         updateRouteMap(false);
       }
