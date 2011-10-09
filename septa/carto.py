@@ -24,7 +24,7 @@ class PilTransitMap (object):
         self.wide = w
         self.high = h
 
-        self.img = Image.new("RGB", (w, h), (255, 255, 255))
+        self.img = Image.new("RGBA", (w, h), (255, 255, 255))
 
     def _draw_poly(self, path_data, color, size):
 
@@ -81,6 +81,9 @@ class PilTransitMap (object):
         vscale_factor = self.high / float(s - n)
         self.scale_factor = min(hscale_factor, vscale_factor)
 
+        self.cx_offset = (self.wide - (e - w)*self.scale_factor) / 2
+        self.cy_offset = (self.high - (s - n)*self.scale_factor) / 2
+
     def _t(self, x, y):
         x += self.x_offset
         y += self.y_offset
@@ -89,6 +92,9 @@ class PilTransitMap (object):
         y *= -self.scale_factor
 
         y += self.high
+
+        x += self.cx_offset
+        y += self.cy_offset
 
         return x, y
 

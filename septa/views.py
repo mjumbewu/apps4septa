@@ -75,9 +75,12 @@ class IntersectingRoutesView (rest.View):
         top = float(top)
 
         bbox = Polygon.from_bbox((left, bottom, right, top))
+        bbox.srid = int(srid)
+        origin = Point((left+right)/2.0, (top+bottom)/2.0)
         routes = get_intersecting_routes(bbox,
                                    count=count,
-                                   srid=srid)
+                                   srid=srid,
+                                   center=origin)
 
         transit_map = PilTransitMap(width, height)
         legend = transit_map.draw_routes(routes)
@@ -91,21 +94,22 @@ class IntersectingRoutesView (rest.View):
                 'route': route.route,
                 'label': route.label,
                 'color': legend[route.route],
+                'distance': route.distance,
             } for route in routes],
             'map_url': map_url,
+            'centroid': "[%s, %s]" % (origin.x, origin.y),
         }
 
 #        return [json.loads(route.geojson) for route in routes]
         return res
 
-def get_intersecting_routes(bbox, count=10, srid='4326'):
-    origin = bbox.centroid
+def get_intersecting_routes(bbox, count=10, srid='4326', center=Point(0,0)):
     routes = SeptaRoutes.objects.all() \
-        .distance(origin, field_name='the_geom_{0}'.format(srid)) \
+        .distance(center, field_name='the_geom_' + srid) \
         .order_by('distance')
 
     filter_params = {
-        'the_geom_{0}__intersects'.format(srid): bbox
+        'the_geom_' + srid + '__intersects': bbox
     }
     routes = routes.filter(**filter_params)
 

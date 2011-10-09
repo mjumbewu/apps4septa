@@ -8,7 +8,7 @@ urlpatterns = patterns('septa',
     url(r'^nearby_routes/(?P<lat>-?\d+(\.\d+)?),(?P<lon>-?\d+(\.\d+)?)',
         NearbyRoutesView.as_view()),
 
-    url(r'^routes/(?P<left>-?\d+(\.\d+)?),(?P<bottom>-?\d+(\.\d+)?)'
+    url(r'^routes/(?P<left>-?\d+(\.\d+)?),(?P<bottom>-?\d+(\.\d+)?),'
         '(?P<right>-?\d+(\.\d+)?),(?P<top>-?\d+(\.\d+)?)',
         IntersectingRoutesView.as_view()),
 )
