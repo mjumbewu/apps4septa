@@ -99,8 +99,13 @@ class PilTransitMap (object):
         w, n, e, s = all_paths.extent
         self._calc_t(w, n, e, s)
 
+        legend = {}
         for route in routes:
-            self._draw_route(route, threshold, (randint(0,255),randint(0,255),randint(0,255)), 4)
+            color = (randint(0,255),randint(0,255),randint(0,255))
+            self._draw_route(route, threshold, color, 4)
+            legend[route.route] = "#%x%x%x" % color
+
+        return legend
 
 class TransitMap (object):
     def __init__(self, w, h):
@@ -181,13 +186,20 @@ class TransitMap (object):
             all_paths = all_paths.union(route.the_geom_900913)
         w, n, e, s = all_paths.extent
 
+        legend = {}
+
         for route in routes:
             self.ctx.save()
             self._transform_to(w, n, e, s)
             self._trace_route(route, threshold)
             self.ctx.restore()
 
-            self._stroke_route(10, (random(), random(), random()))
+            color = (random(), random(), random())
+            self._stroke_route(10, color)
+
+            legend[route.route] = "#%x%x%x" % color
+
+        return legend
 #
 #            self.ctx.save()
 #            self._transform_to(w, n, e, s)

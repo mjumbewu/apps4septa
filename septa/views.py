@@ -79,15 +79,19 @@ class IntersectingRoutesView (rest.View):
                                    count=count,
                                    srid=srid)
 
-        transit_map = PilTransitMap(1024, 768)
-        transit_map.draw_routes(routes)
+        transit_map = PilTransitMap(width, height)
+        legend = transit_map.draw_routes(routes)
 
         fn = 'map%s.png' % randint(0,1000)
         transit_map.img.save(os.path.join(settings.MY_STATIC_ROOT, fn))
         map_url = (settings.STATIC_URL + fn)
 
         res = {
-            'routes': [route.route for route in routes],
+            'routes': [{
+                'route': route.route,
+                'label': route.label,
+                'color': legend[route.route],
+            } for route in routes],
             'map_url': map_url,
         }
 
