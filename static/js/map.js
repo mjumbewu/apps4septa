@@ -34,7 +34,16 @@
     var html = '';
     if (routes && routes.length > 0) {
       $.each(routes, function(i, r) {
-        html += '<h5><div class="swatch swatch-'+i+'" style="background: '+r.color+';"></div>Route '+r.label+'</h5>';
+        var paddedLabel = r.label.trim(), c;
+        if (parseInt(r.label, 10)) {
+          for (c=3-r.label.length; c>0; c--) {
+            paddedLabel = '0' + paddedLabel;
+          }
+        }
+        
+        html += '<h5><div class="swatch swatch-'+i+'" style="background: '+r.color+';"></div>Route '+r.label+'</h5>' + 
+                '<ul><li><a href="http://septa.org/schedules/bus/pdf/'+paddedLabel+'.pdf" target="_blank">Schedule (pdf)</a>' + 
+                '</li><li><a href="http://septa.org/maps/bus/pdf/'+paddedLabel+'.pdf">Map (pdf)</a></li></ul>';
       });
     } else {
       html = '<div class="alert-message block-message warning"><strong>No routes were found.</strong> No worries, just drag the map around and you\'ll find some.</div>';
