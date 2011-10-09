@@ -1,8 +1,11 @@
 import itertools
-import cairo
-import Image
+try:
+    import cairo
+except ImportError:
+    pass
+import Image, ImageDraw
 
-from random import random
+from random import random, randint
 #img = cairo.ImageSurface(cairo.FORMAT_ARGB32, 100, 100)
 #ctx = cairo.Context(img)
 #ctx.scale(100, 100)
@@ -15,6 +18,89 @@ from random import random
 class Cartographer (object):
     pass
 
+
+class PilTransitMap (object):
+    def __init__(self, w, h):
+        self.wide = w
+        self.high = h
+
+        self.img = Image.new("RGB", (w, h), (255, 255, 255))
+
+    def _draw_poly(self, path_data, color, size):
+
+        #
+        # This is a recursive function.  ``path_data`` may be a tuple of tuples.
+        # Check the first element and see if it is a pair of numbers.  If so,
+        # it's a polyline so draw it.  Otherwise, we need to go deeper, so call
+        # the function again.
+        #
+
+        if len(path_data[0]) == 2 and all([isinstance(coord, (int, float))
+                                           for coord in path_data[0]]):
+            draw = ImageDraw.Draw(self.img)
+            prev = self._t(*path_data[0])
+            for coord in path_data[1:]:
+                curr = self._t(*coord)
+                draw.line(prev + curr, fill=color, width=size)
+                prev = curr
+
+        else:
+            for sub_path_data in path_data:
+                self._draw_poly(sub_path_data, color, size)
+
+#    def _mark_beginnings(self, path_data):
+
+#        if len(path_data[0]) == 2 and all([isinstance(coord, (int, float))
+#                                           for coord in path_data[0]]):
+#            self.ctx.arc(*(path_data[0]),
+#                         )
+
+#        else:
+#            for sub_path_data in path_data:
+#                self._trace_poly(sub_path_data)
+
+    def _draw_route(self, route, threshold, color, size):
+        path_data = route.the_geom_900913.simplify(threshold).coords
+        self._draw_poly(path_data, color, size)
+
+#    def _trace_features(self, route):
+#        path_data = route.the_geom_900913.coords
+
+
+    def draw_route(self, route, threshold=0.0):
+        w, n, e, s = route.the_geom_900913.extent
+        self._calc_t(w, n, e, s)
+
+        self._draw_route(route, threshold, (255, 0, 0), 4)
+
+    def _calc_t(self, w, n, e, s):
+        self.x_offset = -w
+        self.y_offset = -n
+
+        hscale_factor = self.wide / float(e - w)
+        vscale_factor = self.high / float(s - n)
+        self.scale_factor = min(hscale_factor, vscale_factor)
+
+    def _t(self, x, y):
+        x += self.x_offset
+        y += self.y_offset
+
+        x *= self.scale_factor
+        y *= -self.scale_factor
+
+        y += self.high
+
+        return x, y
+
+    def draw_routes(self, routes, threshold=0.0):
+        all_paths = routes[0].the_geom_900913
+        for route in routes[1:]:
+            all_paths = all_paths.union(route.the_geom_900913)
+        w, n, e, s = all_paths.extent
+        self._calc_t(w, n, e, s)
+
+        for route in routes:
+            self._draw_route(route, threshold, (randint(0,255),randint(0,255),randint(0,255)), 4)
 
 class TransitMap (object):
     def __init__(self, w, h):

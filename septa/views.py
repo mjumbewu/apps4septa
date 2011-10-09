@@ -13,7 +13,7 @@ from djangorestframework import resources
 import settings
 
 from models import SeptaRoutes
-from carto import TransitMap
+from carto import PilTransitMap
 
 class MapApp (views.TemplateView):
     template_name = 'index.html'
@@ -68,7 +68,7 @@ class IntersectingRoutesView (rest.View):
 
         width = int(width) if width else 1024
         height = int(height) if height else 768
-        count = int(count) if count else None
+        count = int(count) if count else 10
         left = float(left)
         bottom = float(bottom)
         right = float(right)
@@ -79,23 +79,26 @@ class IntersectingRoutesView (rest.View):
                                    count=count,
                                    srid=srid)
 
-        transit_map = TransitMap(1024, 768)
+        transit_map = PilTransitMap(1024, 768)
         transit_map.draw_routes(routes)
 
         fn = 'map%s.png' % randint(0,1000)
-        transit_map.img.write_to_png(os.path.join(settings.MY_STATIC_ROOT, fn))
+        transit_map.img.save(os.path.join(settings.MY_STATIC_ROOT, fn))
         map_url = (settings.STATIC_URL + fn)
 
         res = {
-            'routes': routes,
+            'routes': [route.route for route in routes],
             'map_url': map_url,
         }
 
 #        return [json.loads(route.geojson) for route in routes]
         return res
 
-def get_intersecting_routes(bbox, count=None, srid='4326'):
-    routes = SeptaRoutes.objects.all().geojson()
+def get_intersecting_routes(bbox, count=10, srid='4326'):
+    origin = bbox.centroid
+    routes = SeptaRoutes.objects.all() \
+        .distance(origin, field_name='the_geom_{0}'.format(srid)) \
+        .order_by('distance')
 
     filter_params = {
         'the_geom_{0}__intersects'.format(srid): bbox
