@@ -1,13 +1,14 @@
 (function(){
-  var map = new L.Map('map'),
+  var initCenter = new L.LatLng(39.952335,-75.163789),
+    initZoom = 14,
+    map = new L.Map('map', { zoomControl:false }),
     insetMap = new L.Map('inset-map', { zoomControl:false }),
     cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
     cloudmadeOutUrl = 'http://{s}.tile.cloudmade.com/9f6894100760403498e3b47fdbdbcdef/45008/256/{z}/{x}/{y}.png',
-    cloudmadeOut = new L.TileLayer(cloudmadeOutUrl, {minZoom: 15, maxZoom: 15, attribution: cloudmadeAttribution}),
+    cloudmadeOut = new L.TileLayer(cloudmadeOutUrl, {minZoom: initZoom, maxZoom: initZoom, attribution: cloudmadeAttribution}),
     cloudmadeInUrl = 'http://{s}.tile.cloudmade.com/9f6894100760403498e3b47fdbdbcdef/46246/256/{z}/{x}/{y}.png',
-    cloudmadeIn = new L.TileLayer(cloudmadeInUrl, {minZoom: 15, maxZoom: 15, attribution: false}),
-    initCenter = new L.LatLng(39.952335,-75.163789),
-    initZoom = 15,
+    cloudmadeIn = new L.TileLayer(cloudmadeInUrl, {minZoom: initZoom, maxZoom: initZoom, attribution: false}),
+    transitImageLayer,
     $routeDetails = $('#route-details');
   
   var syncMap = function() {
@@ -16,6 +17,20 @@
   
   var syncInsetMap = function() {
     insetMap.setView(map.getCenter(), map.getZoom());
+  };
+  
+  var updateRouteMap = function(imageUrl) {
+    if (imageUrl) {
+      map.removeLayer(cloudmadeOut);
+      if (transitImageLayer) {
+        map.removeLayer(transitImageLayer);
+      }
+      
+      transitImageLayer = new L.ImageOverlay(imageUrl, map.getBounds(), {attribution: cloudmadeAttribution});
+      map.addLayer(transitImageLayer);
+    } else {
+      map.removeLayer();
+    }
   };
   
   var updateRouteDetails = function(routes) {
@@ -49,10 +64,12 @@
       success: function(data, textStatus, jqXHR) {
         console.log(data, textStatus, jqXHR);
         updateRouteDetails(data.routes);
+        updateRouteMap(data.map_url);
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR, textStatus, errorThrown);
         updateRouteDetails(false);
+        updateRouteMap('/static/images/map283.png');
       }
     });
   };

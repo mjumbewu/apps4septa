@@ -7,6 +7,11 @@ body {
   position:relative;
 }
 
+.leaflet-container {
+  background: #fff;
+  border:2px solid rgba(0, 0, 0, 0.05);
+}
+
 #map {
   height:600px;
 }
@@ -19,6 +24,8 @@ body {
   left: 50%;
   margin-left: -150px;
   margin-top: -100px;
+  z-index:1000;
+
   -webkit-box-shadow: 1px 1px 10px 1px #888;
   -moz-box-shadow: 1px 1px 10px 1px #888;
   box-shadow: 1px 1px 10px 1px #888;
