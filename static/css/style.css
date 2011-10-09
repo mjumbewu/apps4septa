@@ -38,3 +38,12 @@ body {
 #route-details {
   min-height:560px;
 }
+
+#route-details .swatch {
+  height:9px;
+  width:9px;
+  display:inline-block;
+  margin-right:8px;
+
+  border:1px solid rgba(0, 0, 0, 0.05);
+}

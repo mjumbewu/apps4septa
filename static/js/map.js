@@ -34,7 +34,7 @@
     var html = '';
     if (routes && routes.length > 0) {
       $.each(routes, function(i, r) {
-        html += '<h5><div class="swatch swatch-'+i+'"><div>Route '+r.label+'</h5>';
+        html += '<h5><div class="swatch swatch-'+i+'" style="background: '+r.color+';"></div>Route '+r.label+'</h5>';
       });
     } else {
       html = '<div class="alert-message block-message warning"><strong>No routes were found.</strong> No worries, just drag the map around and you\'ll find some.</div>';
