@@ -13,7 +13,7 @@ from djangorestframework import resources
 import settings
 
 from models import SeptaRoutes
-from carto import TransitMap
+from carto import PilTransitMap
 
 class MapApp (views.TemplateView):
     template_name = 'index.html'
@@ -79,15 +79,15 @@ class IntersectingRoutesView (rest.View):
                                    count=count,
                                    srid=srid)
 
-        transit_map = TransitMap(1024, 768)
+        transit_map = PilTransitMap(1024, 768)
         transit_map.draw_routes(routes)
 
         fn = 'map%s.png' % randint(0,1000)
-        transit_map.img.write_to_png(os.path.join(settings.MY_STATIC_ROOT, fn))
+        transit_map.img.save(os.path.join(settings.MY_STATIC_ROOT, fn))
         map_url = (settings.STATIC_URL + fn)
 
         res = {
-            'routes': routes,
+            'routes': [route.route for route in routes],
             'map_url': map_url,
         }
 
@@ -95,7 +95,7 @@ class IntersectingRoutesView (rest.View):
         return res
 
 def get_intersecting_routes(bbox, count=None, srid='4326'):
-    routes = SeptaRoutes.objects.all().geojson()
+    routes = SeptaRoutes.objects.all()
 
     filter_params = {
         'the_geom_{0}__intersects'.format(srid): bbox
