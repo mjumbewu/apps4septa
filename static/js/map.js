@@ -49,13 +49,16 @@
       bottom = bbox.getSouthWest().lat,
       right = bbox.getNorthEast().lng,
       top = bbox.getNorthEast().lat,
-      size = map.getSize();
+      size = map.getSize(),
+      center = insetMap.getCenter();
           
     $.ajax({
       url: '/routes/' + left + ',' + bottom + ',' + right + ',' + top,
       data: {
         width: size.x,
-        height: size.y
+        height: size.y,
+        center_x: center.lng,
+        center_y: center.lat
       },
       dataType: 'json',
       success: function(data, textStatus, jqXHR) {
