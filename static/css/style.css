@@ -15,11 +15,13 @@ body {
   height: 200px;
   width: 300px;
   position: absolute;
-  border: 1px solid red;
   top: 50%;
   left: 50%;
   margin-left: -150px;
   margin-top: -100px;
+  -webkit-box-shadow: 1px 1px 10px 1px #888;
+  -moz-box-shadow: 1px 1px 10px 1px #888;
+  box-shadow: 1px 1px 10px 1px #888;
 }
 
 #inset-map .leaflet-control-attribution {
