@@ -80,7 +80,7 @@ def get_intersecting_routes(bbox, count=None, srid='4326'):
     routes = SeptaRoutes.objects.all().geojson()
 
     filter_params = {
-        'the_geom_{0}__intersects'.format(srid): (bbox,)
+        'the_geom_{0}__intersects'.format(srid): bbox
     }
     routes = routes.filter(**filter_params)
 
