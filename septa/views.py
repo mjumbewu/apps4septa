@@ -68,7 +68,7 @@ class IntersectingRoutesView (rest.View):
 
         width = int(width) if width else 1024
         height = int(height) if height else 768
-        count = int(count) if count else None
+        count = int(count) if count else 10
         left = float(left)
         bottom = float(bottom)
         right = float(right)
@@ -94,8 +94,11 @@ class IntersectingRoutesView (rest.View):
 #        return [json.loads(route.geojson) for route in routes]
         return res
 
-def get_intersecting_routes(bbox, count=None, srid='4326'):
-    routes = SeptaRoutes.objects.all()
+def get_intersecting_routes(bbox, count=10, srid='4326'):
+    origin = bbox.centroid
+    routes = SeptaRoutes.objects.all() \
+        .distance(origin, field_name='the_geom_{0}'.format(srid)) \
+        .order_by('distance')
 
     filter_params = {
         'the_geom_{0}__intersects'.format(srid): bbox
