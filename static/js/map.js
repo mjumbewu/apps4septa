@@ -20,16 +20,13 @@
   };
   
   var updateRouteMap = function(imageUrl) {
+    if (transitImageLayer) {
+      map.removeLayer(transitImageLayer);
+    }
+
     if (imageUrl) {
-      map.removeLayer(cloudmadeOut);
-      if (transitImageLayer) {
-        map.removeLayer(transitImageLayer);
-      }
-      
       transitImageLayer = new L.ImageOverlay(imageUrl, map.getBounds(), {attribution: cloudmadeAttribution});
       map.addLayer(transitImageLayer);
-    } else {
-      map.removeLayer();
     }
   };
   
