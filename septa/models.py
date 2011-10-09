@@ -31,9 +31,9 @@ class SeptaRoutes(models.Model):
     core = models.CharField(max_length=5)
     description = models.CharField(max_length=100)
     shape_len = models.DecimalField(max_digits=65535, decimal_places=65534)
-    the_geom_2272 = models.PointField(srid=2272) # Degrees
-    the_geom_4326 = models.PointField(srid=4326) # Local, feet
-    the_geom_900913 = models.PointField(srid=900913) # Google, meters
+    the_geom_2272 = models.MultiLineStringField(srid=2272) # Degrees
+    the_geom_4326 = models.MultiLineStringField(srid=4326) # Local, feet
+    the_geom_900913 = models.MultiLineStringField(srid=900913) # Google, meters
 
     objects = models.GeoManager()
 

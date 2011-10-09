@@ -1,6 +1,8 @@
 import json
+import os
 
 from decimal import Decimal
+from random import randint
 
 from django.contrib.gis.geos import Point, Polygon
 from django.http import HttpResponse
@@ -8,7 +10,10 @@ from django.views import generic as views
 from djangorestframework import views as rest
 from djangorestframework import resources
 
+import settings
+
 from models import SeptaRoutes
+from carto import TransitMap
 
 class MapApp (views.TemplateView):
     template_name = 'index.html'
@@ -74,7 +79,20 @@ class IntersectingRoutesView (rest.View):
                                    count=count,
                                    srid=srid)
 
-        return [json.loads(route.geojson) for route in routes]
+        transit_map = TransitMap(1024, 768)
+        transit_map.draw_routes(routes)
+
+        fn = 'map%s.png' % randint(0,1000)
+        transit_map.img.write_to_png(os.path.join(settings.MY_STATIC_ROOT, fn))
+        map_url = (settings.STATIC_URL + fn)
+
+        res = {
+            'routes': routes,
+            'map_url': map_url,
+        }
+
+#        return [json.loads(route.geojson) for route in routes]
+        return res
 
 def get_intersecting_routes(bbox, count=None, srid='4326'):
     routes = SeptaRoutes.objects.all().geojson()
