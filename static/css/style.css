@@ -27,3 +27,7 @@ body {
 #inset-map .leaflet-control-attribution {
   display:none;
 }
+
+#route-details {
+  min-height:560px;
+}
