@@ -69,7 +69,7 @@
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR, textStatus, errorThrown);
         updateRouteDetails(false);
-        updateRouteMap('/static/images/map283.png');
+        updateRouteMap(false);
       }
     });
   };
