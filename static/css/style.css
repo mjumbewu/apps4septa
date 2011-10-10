@@ -36,9 +36,9 @@ body {
 #inset-map .leaflet-tile-pane,
 #inset-map .leaflet-map-pane,
 #inset-map {
-  -moz-opacity:0.9;
-  -khtml-opacity: 0.9;
-  opacity: 0.9;
+  -moz-opacity:0.8;
+  -khtml-opacity: 0.8;
+  opacity: 0.8;
 }
 
 #inset-map .leaflet-control-attribution {
