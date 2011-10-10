@@ -3,13 +3,13 @@ from django.contrib.gis.db import models
 class SeptaStops(models.Model):
     gid = models.IntegerField(primary_key=True)
 
-    route = models.IntegerField()
+    route = models.ForeignKey('SeptaRoutes', related_name='stops', db_column='route')
     direction = models.CharField(max_length=254)
     seq = models.IntegerField()
     stopabbr = models.CharField(max_length=254)
     stopid = models.IntegerField()
     stopname = models.CharField(max_length=254)
-    routes = models.CharField(max_length=254)
+    route_gids = models.CharField(max_length=254, db_column='routes')
     latitude = models.DecimalField(max_digits=65535, decimal_places=65534)
     longitude = models.DecimalField(max_digits=65535, decimal_places=65534)
     the_geom_2272 = models.PointField(srid=2272) # Degrees
@@ -20,6 +20,20 @@ class SeptaStops(models.Model):
 
     class Meta:
         db_table = u'septa_stops'
+
+    __routes = None
+    @property
+    def routes(self):
+        """
+        Parse the routes field to get the gids of the routes that use this
+        stop.
+        """
+        if self.__routes is None:
+            gids = [int(trim(gid_strings))
+                    for gid_string in self.route_gids.split(',')
+                    if gid_string not in (None, '')]
+            self.__routes = SeptaRoutes.objects.filter(gid__in=gids)
+        return self.__routes
 
 class SeptaRoutes(models.Model):
     gid = models.IntegerField(primary_key=True)
