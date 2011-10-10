@@ -13,7 +13,7 @@ from djangorestframework import resources
 import settings
 
 from models import SeptaRoutes
-from carto import PilTransitMap
+from carto import PilTransitMap, CairoTransitMap
 
 class MapApp (views.TemplateView):
     template_name = 'index.html'
@@ -60,6 +60,8 @@ def get_nearby_routes(origin, radius=None, count=None, srid='900913'):
 
 class IntersectingRoutesView (rest.View):
 
+    NUM_ROUTES_DEFAULT = 12
+
     def get(self, request, left, bottom, right, top, *args, **kwargs):
         srid = request.REQUEST.get('srid', '4326')
         width = request.REQUEST.get('width', None)
@@ -68,7 +70,7 @@ class IntersectingRoutesView (rest.View):
 
         width = int(width) if width else 1024
         height = int(height) if height else 768
-        count = int(count) if count else 10
+        count = int(count) if count else self.NUM_ROUTES_DEFAULT
         left = float(left)
         bottom = float(bottom)
         right = float(right)
@@ -82,12 +84,14 @@ class IntersectingRoutesView (rest.View):
                                    srid=srid,
                                    center=origin)
 
-        transit_map = PilTransitMap(width, height)
-        legend = transit_map.draw_routes(routes)
+        import carto
+        if hasattr(carto, 'cairo'):
+            transit_map = CairoTransitMap(width, height)
+        else:
+            transit_map = PilTransitMap(width, height)
 
-        fn = 'map%s.png' % randint(0,1000)
-        transit_map.img.save(os.path.join(settings.MY_STATIC_ROOT, fn))
-        map_url = (settings.STATIC_URL + fn)
+        legend = transit_map.draw_routes(routes, center=origin)
+        map_url = transit_map.store()
 
         res = {
             'routes': [{
@@ -97,13 +101,13 @@ class IntersectingRoutesView (rest.View):
                 'distance': route.distance,
             } for route in routes],
             'map_url': map_url,
-            'centroid': "[%s, %s]" % (origin.x, origin.y),
+            'center': "(%s, %s)" % (origin.x, origin.y),
         }
 
 #        return [json.loads(route.geojson) for route in routes]
         return res
 
-def get_intersecting_routes(bbox, count=10, srid='4326', center=Point(0,0)):
+def get_intersecting_routes(bbox, count=None, srid='4326', center=Point(0,0)):
     routes = SeptaRoutes.objects.all() \
         .distance(center, field_name='the_geom_' + srid) \
         .order_by('distance')
